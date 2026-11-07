@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerdas Cermat - SMAN 1 Madang Suku II</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+    <!-- Tone.js for Native Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        gold: '#f59e0b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark-glass {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .buzzer-glow {
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .pulse-active {
+            animation: pulse-ring 1.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- TOP HEADER -->
+    <header class="bg-slate-950/80 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid font-bold text-white text-xl">🎓</i>
+                </div>
+                <div>
+                    <h1 class="font-display font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-brand-100 bg-clip-text text-transparent">
+                        LOMBA CERDAS CERMAT
+                    </h1>
+                    <p class="text-xs text-brand-500 font-medium tracking-wide">SMA NEGERI 1 MADANG SUKU II</p>
+                </div>
+            </div>
+
+            <!-- Navigation / Mode Tabs -->
+            <div class="flex items-center gap-2 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+                <button onclick="switchTab('setup')" id="tab-setup" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-brand-600 text-white shadow">
+                    <i class="fa-solid fa-gear mr-1"></i> Pengaturan & Regu
+                </button>
+                <button onclick="switchTab('wajib')" id="tab-wajib" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200">
+                    <i class="fa-solid fa-list-check mr-1"></i> Babak Penyisihan (5 Sesi)
+                </button>
+                <button onclick="switchTab('final')" id="tab-final" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200">
+                    <i class="fa-solid fa-crown mr-1 text-amber-400"></i> Babak Final (5 Juara Sesi)
+                </button>
+                <button onclick="switchTab('rekap')" id="tab-rekap" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200">
+                    <i class="fa-solid fa-trophy mr-1 text-gold"></i> Klasemen & Rekap
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+
+        <!-- ================= PAGE 1: SETUP & REGU (21 KELAS / 5 SESI) ================= -->
+        <section id="page-setup" class="space-y-6">
+            <!-- Header Intro -->
+            <div class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700/60 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-display font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-users-gear text-brand-500"></i> Babak Penyisihan (5 Sesi — 21 Kelas)
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-1">
+                        Sesi 1: 5 Kelas (25 Soal) | Sesi 2–5: Masing-masing 4 Kelas (20 Soal/Sesi). Total 105 Soal Resmi.
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="resetScores()" class="px-4 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-xl text-xs font-semibold transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Reset Total Poin
+                    </button>
+                    <button onclick="loadDefaultClasses()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold transition">
+                        <i class="fa-solid fa-arrows-rotate mr-1"></i> Reset Peserta
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sessions Breakdown Grid (5 Sessions) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4" id="sessions-setup-grid">
+                <!-- Session Cards generated dynamically via JS -->
+            </div>
+
+            <!-- Question Bank Config & Custom Quiz Add -->
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-700/60 pb-3">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-amber-400"></i> Bank Soal Resmi (105 Soal Penyisihan)
+                    </h3>
+                    <span id="question-count-badge" class="px-3 py-1 bg-brand-500/20 border border-brand-500/30 text-brand-300 text-xs font-semibold rounded-full">
+                        105 Soal Loaded
+                    </span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <label class="text-xs font-semibold text-slate-400">Tambah / Edit Soal Kustom</label>
+                        <input type="text" id="input-q-text" placeholder="Pertanyaan..." class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="text" id="input-q-ans" placeholder="Kunci Jawaban..." class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                        <div class="grid grid-cols-2 gap-2">
+                            <select id="input-q-session" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-2 py-1.5 text-xs">
+                                <option value="1">Sesi 1</option>
+                                <option value="2">Sesi 2</option>
+                                <option value="3">Sesi 3</option>
+                                <option value="4">Sesi 4</option>
+                                <option value="5">Sesi 5</option>
+                            </select>
+                            <select id="input-q-stage" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-2 py-1.5 text-xs">
+                                <option value="wajib">Tahap Wajib</option>
+                                <option value="lemparan">Tahap Lemparan</option>
+                                <option value="rebutan">Rebutan</option>
+                            </select>
+                        </div>
+                        <button onclick="addCustomQuestion()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-semibold py-1.5 px-3 rounded-lg text-xs transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Simpan Soal
+                        </button>
+                    </div>
+
+                    <div class="md:col-span-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800 max-h-56 overflow-y-auto space-y-2" id="questions-list-preview">
+                        <!-- Questions preview list -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: BABAK PENYISIHAN (WAJIB & LEMPARAN) ================= -->
+        <section id="page-wajib" class="hidden space-y-6">
+            <!-- Header Controls -->
+            <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-xl space-y-4">
+                
+                <!-- Navigasi Utama Tombol Sesi 1 - 5 Dewan Juri -->
+                <div class="bg-slate-900/90 border border-amber-500/30 p-4 rounded-xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase tracking-wider font-extrabold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-sm"></i> NAVIGASI SESI PENYISIHAN (DEWAN JURI):
+                        </span>
+                        <span class="text-xs font-semibold text-slate-400">Pilih sesi untuk menampilkan peserta & soal</span>
+                    </div>
+                    
+                    <!-- Grid 5 Tombol Sesi 1 sampai 5 -->
+                    <div class="grid grid-cols-5 gap-3" id="session-select-buttons">
+                        <button onclick="selectWajibSession(1)" id="btn-sesi-1" class="sesi-nav-btn py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-150 flex flex-col sm:flex-row items-center justify-center gap-1.5 w-full bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 shadow">
+                            <i class="fa-solid fa-flag text-amber-400"></i> <span>Sesi 1</span>
+                        </button>
+                        <button onclick="selectWajibSession(2)" id="btn-sesi-2" class="sesi-nav-btn py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-150 flex flex-col sm:flex-row items-center justify-center gap-1.5 w-full bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 shadow">
+                            <i class="fa-solid fa-flag text-amber-400"></i> <span>Sesi 2</span>
+                        </button>
+                        <button onclick="selectWajibSession(3)" id="btn-sesi-3" class="sesi-nav-btn py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-150 flex flex-col sm:flex-row items-center justify-center gap-1.5 w-full bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 shadow">
+                            <i class="fa-solid fa-flag text-amber-400"></i> <span>Sesi 3</span>
+                        </button>
+                        <button onclick="selectWajibSession(4)" id="btn-sesi-4" class="sesi-nav-btn py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-150 flex flex-col sm:flex-row items-center justify-center gap-1.5 w-full bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 shadow">
+                            <i class="fa-solid fa-flag text-amber-400"></i> <span>Sesi 4</span>
+                        </button>
+                        <button onclick="selectWajibSession(5)" id="btn-sesi-5" class="sesi-nav-btn py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-150 flex flex-col sm:flex-row items-center justify-center gap-1.5 w-full bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 shadow">
+                            <i class="fa-solid fa-flag text-amber-400"></i> <span>Sesi 5</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-between items-center gap-4 border-t border-slate-700/60 pt-3">
+                    <!-- Stage Selector (Tahap 1: Wajib vs Tahap 2: Lemparan) -->
+                    <div class="space-y-1">
+                        <span class="text-xs uppercase tracking-wider font-semibold text-brand-400">PILIH TAHAP SOAL</span>
+                        <div class="flex gap-2">
+                            <button onclick="selectStage('wajib')" id="stage-btn-wajib" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white transition border border-slate-700">
+                                Tahap 1: Soal Wajib
+                            </button>
+                            <button onclick="selectStage('lemparan')" id="stage-btn-lemparan" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400 hover:text-white transition border border-slate-700">
+                                Tahap 2: Soal Lemparan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Timer Component -->
+                    <div class="flex items-center gap-3 bg-slate-900/80 border border-slate-700/80 px-4 py-2 rounded-xl">
+                        <div class="text-center">
+                            <div class="text-[10px] text-slate-400 font-semibold">WAKTU JAWAB</div>
+                            <div id="wajib-timer-display" class="font-display text-2xl font-black text-amber-400">10s</div>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="startWajibTimer(10)" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition">
+                                10s
+                            </button>
+                            <button onclick="startWajibTimer(5)" class="px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold transition">
+                                5s
+                            </button>
+                            <button onclick="stopWajibTimer()" class="px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold transition">
+                                <i class="fa-solid fa-stop"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Question Display Card -->
+            <div class="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700/80 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 text-slate-800/30 text-9xl font-black select-none uppercase" id="stage-bg-watermark">
+                    WAJIB
+                </div>
+                
+                <div class="relative z-10 space-y-4">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <div class="flex items-center gap-2">
+                            <span id="q-no-badge" class="px-3 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold rounded-lg text-xs">
+                                Soal No. 1
+                            </span>
+                            <span id="current-stage-label" class="px-3 py-1 bg-brand-500/20 border border-brand-500/40 text-brand-300 font-bold rounded-lg text-xs uppercase">
+                                Tahap 1: Wajib
+                            </span>
+                        </div>
+                        <span id="q-progress-badge" class="text-xs font-semibold text-slate-400">
+                            Soal 1 Dari 15
+                        </span>
+                    </div>
+
+                    <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-6 space-y-2">
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Pertanyaan:</div>
+                        <p id="wajib-question-text" class="text-xl sm:text-2xl font-medium text-white leading-relaxed">
+                            Loading pertanyaan...
+                        </p>
+                    </div>
+
+                    <!-- Hidden Answer Reveal -->
+                    <div id="wajib-answer-box" class="hidden bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 text-emerald-300">
+                        <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 block">Kunci Jawaban Resmi:</span>
+                        <span id="wajib-answer-text" class="text-lg font-bold"></span>
+                    </div>
+
+                    <div class="flex flex-wrap justify-between items-center gap-3 pt-2">
+                        <button onclick="toggleWajibAnswer()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold transition">
+                            <i class="fa-solid fa-eye mr-1"></i> <span id="toggle-ans-btn-text">Tampilkan Kunci Jawaban</span>
+                        </button>
+
+                        <div class="flex gap-2">
+                            <button onclick="prevWajibQuestion()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition">
+                                <i class="fa-solid fa-arrow-left mr-1"></i> Soal Sebelumnya
+                            </button>
+                            <button onclick="nextWajibQuestion()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-brand-600/30 transition flex items-center gap-2">
+                                Soal Berikutnya <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scoring Action Table for Active Session Teams -->
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-6 shadow-xl space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center justify-between border-b border-slate-700/60 pb-3">
+                    <span><i class="fa-solid fa-calculator text-brand-400 mr-2"></i> Input Nilai Regu (Sesi <span id="active-session-label">1</span>)</span>
+                    <span class="text-xs text-slate-400 font-normal">Wajib Benar: +100 | Lemparan Benar: +50 / Salah: 0</span>
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" id="wajib-teams-scoring-grid">
+                    <!-- Session Active Teams Score Controls -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: BABAK FINAL (5 JUARA SESI) ================= -->
+        <section id="page-final" class="hidden space-y-6">
+            <!-- Header Controls & Finalist Banner -->
+            <div class="bg-gradient-to-r from-amber-950/60 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-display font-extrabold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-crown text-amber-400"></i> BABAK FINAL (5 KELAS FINALIS)
+                        </h2>
+                        <p class="text-slate-300 text-xs mt-1">
+                            Peserta Babak Final adalah Juara 1 (Nilai Tertinggi) dari Masing-Masing 5 Sesi Babak Penyisihan.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="autoQualifyFinalists()" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs shadow-lg shadow-amber-500/20 transition">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Update 5 Finalis Otomatis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5 Finalists Badge Bar -->
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-2" id="finalists-badges-bar">
+                    <!-- Dynamic 5 Finalists -->
+                </div>
+            </div>
+
+            <!-- Stage Tabs within Final (Tahap 1: Soal Lemparan vs Tahap 2: Soal Rebutan) -->
+            <div class="flex items-center justify-between bg-slate-800/90 border border-slate-700 p-2 rounded-2xl">
+                <div class="flex gap-2">
+                    <button onclick="switchFinalStage('lemparan')" id="final-stage-tab-lemparan" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow transition">
+                        Tahap I: Soal Lemparan Final (20 Soal)
+                    </button>
+                    <button onclick="switchFinalStage('rebutan')" id="final-stage-tab-rebutan" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition">
+                        Tahap II: Soal Rebutan Final (15 Soal)
+                    </button>
+                </div>
+                
+                <!-- Penalty configuration for Rebutan -->
+                <div id="rebutan-penalty-box" class="hidden items-center gap-2 bg-slate-900 border border-slate-700 px-3 py-1 rounded-xl">
+                    <label class="text-xs text-slate-400 font-semibold">Pengurangan Salah:</label>
+                    <select id="rebutan-penalty-val" class="bg-slate-800 text-rose-400 font-bold text-xs rounded border border-slate-700 px-2 py-1 outline-none">
+                        <option value="-50" selected>-50 Poin</option>
+                        <option value="-100">-100 Poin</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- TAHAP I: LEMPARAN FINAL VIEW -->
+            <div id="final-stage-lemparan-view" class="space-y-6">
+                <!-- Question Card for Lemparan Final -->
+                <div class="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl relative">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+                        <div class="flex items-center gap-2">
+                            <span id="final-lempar-q-no" class="px-3 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold rounded-lg text-xs">
+                                Soal No. 1
+                            </span>
+                            <span id="final-lempar-target-class" class="px-3 py-1 bg-brand-500/20 border border-brand-500/40 text-brand-300 font-bold rounded-lg text-xs uppercase">
+                                Giliran: Kelas 1
+                            </span>
+                        </div>
+                        <span id="final-lempar-progress" class="text-xs font-semibold text-slate-400">
+                            Soal 1 dari 20
+                        </span>
+                    </div>
+
+                    <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-6 space-y-2">
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Pertanyaan Lemparan Final:</div>
+                        <p id="final-lempar-text" class="text-xl sm:text-2xl font-semibold text-white leading-relaxed">
+                            Loading pertanyaan lemparan final...
+                        </p>
+                    </div>
+
+                    <!-- Hidden Answer -->
+                    <div id="final-lempar-ans-box" class="hidden mt-4 bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 text-emerald-300">
+                        <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 block">Kunci Jawaban Resmi:</span>
+                        <span id="final-lempar-ans-text" class="text-lg font-bold"></span>
+                    </div>
+
+                    <div class="flex flex-wrap justify-between items-center gap-3 pt-4">
+                        <button onclick="toggleFinalLemparAns()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold transition">
+                            <i class="fa-solid fa-eye mr-1"></i> <span id="final-lempar-toggle-ans-btn">Tampilkan Kunci Jawaban</span>
+                        </button>
+                        <div class="flex gap-2">
+                            <button onclick="prevFinalLemparQ()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition">
+                                <i class="fa-solid fa-arrow-left mr-1"></i> Soal Sebelum
+                            </button>
+                            <button onclick="nextFinalLemparQ()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs shadow-lg transition flex items-center gap-2">
+                                Soal Berikut <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finalist Scoring Cards for Lemparan Final -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
+                    <h3 class="text-base font-bold text-white border-b border-slate-700 pb-3 flex justify-between items-center">
+                        <span><i class="fa-solid fa-calculator text-amber-400 mr-2"></i> Input Nilai Soal Lemparan Final (+100 Poin Benar)</span>
+                        <span class="text-xs text-slate-400">Jika kelas penanya tidak bisa jawab, klik pada kelas yang merebut</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" id="final-lempar-scoring-grid">
+                        <!-- Finalist scoring cards dynamically inserted -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAHAP II: REBUTAN FINAL VIEW -->
+            <div id="final-stage-rebutan-view" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left 2 Cols: Question Card & Status -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-700/60 pb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Soal Rebutan Final Aktif
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span id="final-rebutan-progress" class="text-xs font-semibold text-slate-400 mr-2">Soal 1 dari 15</span>
+                                <button onclick="startRebutanTimer(10)" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold">Timer 10s</button>
+                                <button onclick="startRebutanTimer(5)" class="px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold">Timer 5s</button>
+                            </div>
+                        </div>
+
+                        <!-- Timer Display -->
+                        <div class="flex justify-between items-center bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3">
+                            <span class="text-xs text-slate-400 font-semibold">Sisa Waktu Menjawab:</span>
+                            <span id="rebutan-timer-display" class="text-2xl font-black text-amber-400 font-display">10s</span>
+                        </div>
+
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-6 space-y-2 min-h-[140px] flex flex-col justify-center">
+                            <p id="rebutan-question-text" class="text-xl sm:text-2xl font-semibold text-white leading-relaxed">
+                                Klik "Soal Rebutan Berikutnya" untuk memulai babak.
+                            </p>
+                        </div>
+
+                        <!-- Hidden Answer Box -->
+                        <div id="rebutan-answer-box" class="hidden bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 text-emerald-300">
+                            <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 block">Kunci Jawaban:</span>
+                            <span id="rebutan-answer-text" class="text-lg font-semibold"></span>
+                        </div>
+
+                        <div class="flex flex-wrap justify-between items-center gap-3 pt-2">
+                            <button onclick="toggleRebutanAnswer()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold transition">
+                                <i class="fa-solid fa-eye mr-1"></i> <span id="rebutan-toggle-ans-btn-text">Tampilkan Jawaban</span>
+                            </button>
+                            <div class="flex gap-2">
+                                <button onclick="prevRebutanQuestion()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition">
+                                    <i class="fa-solid fa-arrow-left mr-1"></i> Soal Sebelum
+                                </button>
+                                <button onclick="nextRebutanQuestion()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-sm shadow-lg shadow-amber-500/20 transition flex items-center gap-2">
+                                    Soal Rebutan Berikutnya <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Locked Team Banner -->
+                    <div id="buzzer-status-card" class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-xl text-center space-y-4">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">STATUS BEL / BUZZER REBUTAN FINAL</div>
+                        
+                        <div id="buzzer-idle-state" class="py-4">
+                            <div class="inline-flex p-4 rounded-full bg-slate-900 border border-slate-700 text-slate-500 text-3xl mb-2">
+                                <i class="fa-solid fa-bell-slash"></i>
+                            </div>
+                            <h4 class="text-slate-300 font-semibold text-base">Bel Belum Ditekan</h4>
+                            <p class="text-xs text-slate-500">Menunggu salah satu dari 5 kelas finalis menekan bel</p>
+                        </div>
+
+                        <div id="buzzer-locked-state" class="hidden py-4 space-y-4 pulse-active">
+                            <div class="inline-flex p-4 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 text-4xl buzzer-glow">
+                                <i class="fa-solid fa-bell text-rose-500"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs uppercase font-bold tracking-widest text-rose-400">FINALIS PERTAMA MENEKAN BEL:</span>
+                                <h3 id="locked-team-name" class="text-3xl font-display font-black text-white mt-1">
+                                    KELAS FINALIS
+                                </h3>
+                            </div>
+
+                            <!-- Fast Action Scoring Buttons for Locked Team -->
+                            <div class="flex justify-center gap-3 pt-2">
+                                <button onclick="scoreRebutanLocked(true)" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-emerald-600/30 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-check text-lg"></i> BENAR (+100)
+                                </button>
+                                <button onclick="scoreRebutanLocked(false)" class="px-6 py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-rose-600/30 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-xmark text-lg"></i> SALAH (<span id="btn-penalty-label">-50</span>)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Col: Interactive Buzzer Pad for 5 Finalist Teams -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-xl space-y-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white border-b border-slate-700 pb-3 flex justify-between items-center">
+                            <span><i class="fa-solid fa-hand-pointer text-amber-400 mr-2"></i> Bel Kelas Finalis</span>
+                            <button onclick="resetBuzzer()" class="text-xs text-rose-400 hover:text-rose-300 font-bold px-2 py-1 bg-rose-950/40 border border-rose-500/30 rounded-lg">Reset Bel</button>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-2 mb-3">Klik tombol kelas di bawah saat bel berbunyi:</p>
+                        <div class="grid grid-cols-1 gap-3" id="rebutan-buzzers-grid">
+                            <!-- 5 Finalist Buzzer Buttons Injected Here -->
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-center">
+                        <span class="text-[11px] text-slate-400">Gunakan bel digital atau klik langsung nama kelas di atas</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: KLASEMEN & REKAP NILAI ================= -->
+        <section id="page-rekap" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-display font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-gold"></i> Papan Skor & Klasemen Lomba
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-1">
+                        Pilihan tampilan klasemen terpisah untuk Babak Final (5 Juara Sesi) dan Babak Penyisihan (21 Kelas).
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="switchLeaderboardMode('final')" id="lb-mode-btn-final" class="px-4 py-2 bg-amber-500 text-slate-950 rounded-xl text-xs font-extrabold shadow transition">
+                        <i class="fa-solid fa-crown mr-1"></i> Klasemen Babak Final
+                    </button>
+                    <button onclick="switchLeaderboardMode('penyisihan')" id="lb-mode-btn-penyisihan" class="px-4 py-2 bg-slate-800 text-slate-400 hover:text-white border border-slate-700 rounded-xl text-xs font-bold transition">
+                        <i class="fa-solid fa-users mr-1"></i> Klasemen Babak Penyisihan
+                    </button>
+                    <button onclick="exportToCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-excel"></i> Unduh Rekap (CSV)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top 3 Podium Highlights -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="podium-highlights">
+                <!-- Top 3 cards injected here -->
+            </div>
+
+            <!-- Leaderboard Table -->
+            <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden shadow-2xl space-y-2">
+                <div class="px-5 py-3 bg-slate-900 border-b border-slate-700/80 flex justify-between items-center">
+                    <h3 id="table-header-title" class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-crown"></i> KLASEMEN KHUSUS BABAK FINAL (5 FINALIS)
+                    </h3>
+                    <span id="table-header-subtitle" class="text-xs text-slate-400">Nilai dihitung murni dari hasil Babak Final</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead id="leaderboard-table-head">
+                            <tr class="bg-slate-950/80 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
+                                <th class="p-4 text-center w-16">Peringkat</th>
+                                <th class="p-4">Nama Kelas Finalis</th>
+                                <th class="p-4 text-center">Sesi Asal</th>
+                                <th class="p-4 text-center text-amber-300">Poin Final</th>
+                                <th class="p-4 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-table-body" class="divide-y divide-slate-700/60 text-sm font-medium">
+                            <!-- Dynamic Table Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            &copy; 2026 SMAN 1 Madang Suku II — Sistem Pengelola Lomba Cerdas Cermat Resmi
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // 21 Classes configuration for SMAN 1 Madang Suku II divided into 5 sessions according to updated list
+        const DEFAULT_CLASSES = [
+            // Sesi 1 (4 Kelas)
+            { name: "Kelas XII.2", session: 1 },
+            { name: "Kelas XII.3", session: 1 },
+            { name: "Kelas XI.1", session: 1 },
+            { name: "Kelas X.7", session: 1 },
+            // Sesi 2 (4 Kelas)
+            { name: "Kelas XII.7", session: 2 },
+            { name: "Kelas X.5", session: 2 },
+            { name: "Kelas XI.4", session: 2 },
+            { name: "Kelas X.3", session: 2 },
+            // Sesi 3 (5 Kelas)
+            { name: "Kelas XI.3", session: 3 },
+            { name: "Kelas XII.5", session: 3 },
+            { name: "Kelas XII.6", session: 3 },
+            { name: "Kelas X.4", session: 3 },
+            { name: "Kelas XI.6", session: 3 },
+            // Sesi 4 (4 Kelas)
+            { name: "Kelas XII.1", session: 4 },
+            { name: "Kelas XI.5", session: 4 },
+            { name: "Kelas X.1", session: 4 },
+            { name: "Kelas X.2", session: 4 },
+            // Sesi 5 (4 Kelas)
+            { name: "Kelas XII.4", session: 5 },
+            { name: "Kelas X.6", session: 5 },
+            { name: "Kelas XI.7", session: 5 },
+            { name: "Kelas XI.2", session: 5 }
+        ];
+
+        // FULL OFFICIAL QUESTIONS DATASET (PENYISIHAN + FINAL)
+        const OFFICIAL_QUESTIONS = [
+            // SESI 1 — Tahap 1: Soal Wajib (15 Soal)
+            { id: 1, session: 1, stage: 'wajib', no: 1, text: 'Apa nama dasar negara Indonesia?', answer: 'Pancasila' },
+            { id: 2, session: 1, stage: 'wajib', no: 2, text: 'Siapa pencipta lagu Indonesia Raya?', answer: 'W.R. Supratman' },
+            { id: 3, session: 1, stage: 'wajib', no: 3, text: 'Apa nama ibu kota negara Jepang?', answer: 'Tokyo' },
+            { id: 4, session: 1, stage: 'wajib', no: 4, text: 'Apa nama planet terbesar dalam tata surya?', answer: 'Jupiter' },
+            { id: 5, session: 1, stage: 'wajib', no: 5, text: 'Apa nama proses tumbuhan membuat makanan dengan bantuan cahaya matahari?', answer: 'Fotosintesis' },
+            { id: 6, session: 1, stage: 'wajib', no: 6, text: 'Berapa jumlah kromosom dalam sel tubuh manusia normal?', answer: '46' },
+            { id: 7, session: 1, stage: 'wajib', no: 7, text: 'Apa nama samudra terluas di dunia?', answer: 'Samudra Pasifik' },
+            { id: 8, session: 1, stage: 'wajib', no: 8, text: 'Siapa tokoh yang dikenal sebagai Bapak Pendidikan Nasional?', answer: 'Ki Hadjar Dewantara' },
+            { id: 9, session: 1, stage: 'wajib', no: 9, text: 'Apa nama mata uang negara Jepang?', answer: 'Yen' },
+            { id: 10, session: 1, stage: 'wajib', no: 10, text: 'Apa nama organ tubuh manusia yang berfungsi memompa darah?', answer: 'Jantung' },
+            { id: 11, session: 1, stage: 'wajib', no: 11, text: 'Apa nama garis khayal yang membagi bumi menjadi belahan utara dan selatan?', answer: 'Khatulistiwa' },
+            { id: 12, session: 1, stage: 'wajib', no: 12, text: 'Apa nama kerajaan maritim besar di Sumatra yang berjaya pada abad ke-7?', answer: 'Sriwijaya' },
+            { id: 13, session: 1, stage: 'wajib', no: 13, text: 'Siapa penulis novel Laskar Pelangi?', answer: 'Andrea Hirata' },
+            { id: 14, session: 1, stage: 'wajib', no: 14, text: 'Apa nama alat untuk mengukur suhu?', answer: 'Termometer' },
+            { id: 15, session: 1, stage: 'wajib', no: 15, text: 'Apa nama organisasi regional negara-negara Asia Tenggara?', answer: 'ASEAN' },
+
+            // SESI 1 — Tahap 2: Soal Lemparan (10 Soal)
+            { id: 16, session: 1, stage: 'lemparan', no: 16, text: 'Apa nama peristiwa ketika bumi berada di antara matahari dan bulan sehingga bulan tampak gelap?', answer: 'Gerhana bulan' },
+            { id: 17, session: 1, stage: 'lemparan', no: 17, text: 'Siapa tokoh yang mengemukakan teori relativitas?', answer: 'Albert Einstein' },
+            { id: 18, session: 1, stage: 'lemparan', no: 18, text: 'Apa nama unsur kimia dengan lambang Fe?', answer: 'Besi' },
+            { id: 19, session: 1, stage: 'lemparan', no: 19, text: 'Apa nama rumah adat tradisional masyarakat Minangkabau?', answer: 'Rumah Gadang' },
+            { id: 20, session: 1, stage: 'lemparan', no: 20, text: 'Apa nama organisasi yang berdiri pada 20 Mei 1908 dan menjadi tonggak Kebangkitan Nasional?', answer: 'Budi Utomo' },
+            { id: 21, session: 1, stage: 'lemparan', no: 21, text: 'Apa nama sungai terpanjang di Indonesia?', answer: 'Sungai Kapuas' },
+            { id: 22, session: 1, stage: 'lemparan', no: 22, text: 'Apa nama selat yang memisahkan Pulau Sumatra dan Pulau Jawa?', answer: 'Selat Sunda' },
+            { id: 23, session: 1, stage: 'lemparan', no: 23, text: 'Apa nama negara terkecil di dunia berdasarkan luas wilayah?', answer: 'Vatikan' },
+            { id: 24, session: 1, stage: 'lemparan', no: 24, text: 'Apa nama proses perubahan wujud zat dari gas menjadi cair?', answer: 'Kondensasi' },
+            { id: 25, session: 1, stage: 'lemparan', no: 25, text: 'Apa nama lapisan atmosfer tempat sebagian besar fenomena cuaca terjadi?', answer: 'Troposfer' },
+
+            // SESI 2 — Tahap 1: Soal Wajib (12 Soal)
+            { id: 26, session: 2, stage: 'wajib', no: 26, text: 'Kapan Indonesia memproklamasikan kemerdekaannya?', answer: '17 Agustus 1945' },
+            { id: 27, session: 2, stage: 'wajib', no: 27, text: 'Siapa dua tokoh yang membacakan dan mendampingi pembacaan Proklamasi Kemerdekaan Indonesia?', answer: 'Soekarno dan Mohammad Hatta' },
+            { id: 28, session: 2, stage: 'wajib', no: 28, text: 'Apa nama lambang negara Indonesia?', answer: 'Garuda Pancasila' },
+            { id: 29, session: 2, stage: 'wajib', no: 29, text: 'Apa nama konstitusi tertulis yang berlaku di Indonesia?', answer: 'UUD 1945' },
+            { id: 30, session: 2, stage: 'wajib', no: 30, text: 'Apa nama benua yang tidak memiliki penduduk tetap asli?', answer: 'Antarktika' },
+            { id: 31, session: 2, stage: 'wajib', no: 31, text: 'Apa nama mata uang resmi Indonesia?', answer: 'Rupiah' },
+            { id: 32, session: 2, stage: 'wajib', no: 32, text: 'Apa nama zat hijau daun yang berperan dalam fotosintesis?', answer: 'Klorofil' },
+            { id: 33, session: 2, stage: 'wajib', no: 33, text: 'Apa nama alat untuk mengukur tekanan udara?', answer: 'Barometer' },
+            { id: 34, session: 2, stage: 'wajib', no: 34, text: 'Berapa jumlah sudut dalam sebuah segitiga?', answer: '180 derajat' },
+            { id: 35, session: 2, stage: 'wajib', no: 35, text: 'Apa nama proses pembelahan sel yang menghasilkan dua sel anak identik?', answer: 'Mitosis' },
+            { id: 36, session: 2, stage: 'wajib', no: 36, text: 'Siapa tokoh yang mengetik naskah Proklamasi Kemerdekaan Indonesia?', answer: 'Sayuti Melik' },
+            { id: 37, session: 2, stage: 'wajib', no: 37, text: 'Apa nama tarian tradisional dari Aceh yang terkenal dengan gerakan serempak dan tepukan tangan?', answer: 'Tari Saman' },
+
+            // SESI 2 — Tahap 2: Soal Lemparan (8 Soal)
+            { id: 38, session: 2, stage: 'lemparan', no: 38, text: 'Apa nama satuan internasional untuk kuat arus listrik?', answer: 'Ampere' },
+            { id: 39, session: 2, stage: 'lemparan', no: 39, text: 'Apa nama gurun terluas di dunia?', answer: 'Gurun Antarktika' },
+            { id: 40, session: 2, stage: 'lemparan', no: 40, text: 'Siapakah ketua BPUPKI?', answer: 'Dr. Radjiman Wedyodiningrat' },
+            { id: 41, session: 2, stage: 'lemparan', no: 41, text: 'Apa nama lembaga PBB yang menangani pendidikan, ilmu pengetahuan, dan kebudayaan?', answer: 'UNESCO' },
+            { id: 42, session: 2, stage: 'lemparan', no: 42, text: 'Apa nama proses perubahan wujud dari padat langsung menjadi gas?', answer: 'Sublimasi' },
+            { id: 43, session: 2, stage: 'lemparan', no: 43, text: 'Apa nama energi yang dimiliki benda karena geraknya?', answer: 'Energi kinetik' },
+            { id: 44, session: 2, stage: 'lemparan', no: 44, text: 'Apa nama garis lintang 0 derajat?', answer: 'Khatulistiwa' },
+            { id: 45, session: 2, stage: 'lemparan', no: 45, text: 'Apa nama lapisan bumi yang berada di antara kerak dan inti?', answer: 'Mantel bumi' },
+
+            // SESI 3 — Tahap 1: Soal Wajib (12 Soal)
+            { id: 46, session: 3, stage: 'wajib', no: 46, text: 'Apa nama organisasi internasional yang didirikan pada 1945 untuk menjaga perdamaian dunia?', answer: 'Perserikatan Bangsa-Bangsa (PBB)' },
+            { id: 47, session: 3, stage: 'wajib', no: 47, text: 'Siapa raja Majapahit yang terkenal dengan Sumpah Palapa?', answer: 'Gajah Mada' },
+            { id: 48, session: 3, stage: 'wajib', no: 48, text: 'Apa nama peristiwa yang menghasilkan ikrar persatuan pemuda pada 28 Oktober 1928?', answer: 'Sumpah Pemuda' },
+            { id: 49, session: 3, stage: 'wajib', no: 49, text: 'Apa nama negara yang memiliki Menara Eiffel?', answer: 'Prancis' },
+            { id: 50, session: 3, stage: 'wajib', no: 50, text: 'Apa nama danau vulkanik terbesar di Indonesia yang terletak di Sumatra Utara?', answer: 'Danau Toba' },
+            { id: 51, session: 3, stage: 'wajib', no: 51, text: 'Apa nama gerakan bumi berputar pada porosnya?', answer: 'Rotasi bumi' },
+            { id: 52, session: 3, stage: 'wajib', no: 52, text: 'Apa nama gerakan bumi mengelilingi matahari?', answer: 'Revolusi bumi' },
+            { id: 53, session: 3, stage: 'wajib', no: 53, text: 'Apa nama hubungan antara dua organisme ketika keduanya saling memperoleh keuntungan?', answer: 'Simbiosis mutualisme' },
+            { id: 54, session: 3, stage: 'wajib', no: 54, text: 'Apa nama sistem pemerintahan yang kekuasaan negaranya berasal dari rakyat?', answer: 'Demokrasi' },
+            { id: 55, session: 3, stage: 'wajib', no: 55, text: 'Apa nama proses penguraian bahan organik oleh mikroorganisme menjadi zat yang lebih sederhana?', answer: 'Dekomposisi' },
+            { id: 56, session: 3, stage: 'wajib', no: 56, text: 'Apa nama hukum yang menyatakan bahwa gaya sama dengan massa dikalikan percepatan?', answer: 'Hukum II Newton' },
+            { id: 57, session: 3, stage: 'wajib', no: 57, text: 'Apa nama negara yang memiliki Piramida Giza?', answer: 'Mesir' },
+            { id: 571, session: 3, stage: 'wajib', no: 13, text: 'Apa nama rumah adat Papua?', answer: 'Honai' },
+            { id: 572, session: 3, stage: 'wajib', no: 14, text: 'Apa nama ibu kota Selandia Baru?', answer: 'Wellington' },
+            { id: 573, session: 3, stage: 'wajib', no: 15, text: 'Siapa nama wakil presiden pertama Indonesia?', answer: 'Mohammad Hatta' },
+
+            // SESI 3 — Tahap 2: Soal Lemparan (8 Soal)
+            { id: 58, session: 3, stage: 'lemparan', no: 58, text: 'Apa nama fenomena ketika benda tampak patah atau bergeser saat sebagian berada di dalam air?', answer: 'Pembiasan cahaya' },
+            { id: 59, session: 3, stage: 'lemparan', no: 59, text: 'Jika 5 pekerja menyelesaikan pekerjaan dalam 12 hari, berapa hari yang dibutuhkan 10 pekerja dengan kemampuan sama?', answer: '6 hari' },
+            { id: 60, session: 3, stage: 'lemparan', no: 60, text: 'Apa nama bilangan yang hanya memiliki dua faktor positif, yaitu 1 dan bilangan itu sendiri?', answer: 'Bilangan prima' },
+            { id: 61, session: 3, stage: 'lemparan', no: 61, text: 'Apa nama perubahan wujud dari cair menjadi gas?', answer: 'Penguapan' },
+            { id: 62, session: 3, stage: 'lemparan', no: 62, text: 'Apa nama alat untuk mengukur kelembapan udara?', answer: 'Higrometer' },
+            { id: 63, session: 3, stage: 'lemparan', no: 63, text: 'Apa nama negara yang dikenal sebagai Negeri Matahari Terbit?', answer: 'Jepang' },
+            { id: 64, session: 3, stage: 'lemparan', no: 64, text: 'Apa nama pertemuan negara-negara Asia-Afrika yang diselenggarakan di Bandung pada 1955?', answer: 'Konferensi Asia-Afrika' },
+            { id: 65, session: 3, stage: 'lemparan', no: 65, text: 'Apa nama bilangan Romawi XL?', answer: '40' },
+            { id: 651, session: 3, stage: 'lemparan', no: 9, text: 'Siapakah penemu teori relativitas khusus?', answer: 'Albert Einstein' },
+            { id: 652, session: 3, stage: 'lemparan', no: 10, text: 'Apa nama selat yang memisahkan Pulau Kalimantan dan Pulau Sulawesi?', answer: 'Selat Makassar' },
+
+            // SESI 4 — Tahap 1: Soal Wajib (12 Soal)
+            { id: 66, session: 4, stage: 'wajib', no: 66, text: 'Apa nama unsur kimia dengan lambang Au?', answer: 'Emas' },
+            { id: 67, session: 4, stage: 'wajib', no: 67, text: 'Apa nama organ ekskresi manusia yang menyaring darah dan menghasilkan urine?', answer: 'Ginjal' },
+            { id: 68, session: 4, stage: 'wajib', no: 68, text: 'Apa nama zat yang memiliki pH kurang dari 7?', answer: 'Asam' },
+            { id: 69, session: 4, stage: 'wajib', no: 69, text: 'Apa nama alat untuk mengukur kecepatan angin?', answer: 'Anemometer' },
+            { id: 70, session: 4, stage: 'wajib', no: 70, text: 'Apa nama negara yang memiliki Menara Pisa?', answer: 'Italia' },
+            { id: 71, session: 4, stage: 'wajib', no: 71, text: 'Apa nama sistem klasifikasi makhluk hidup yang terdiri atas lima kingdom?', answer: 'Sistem lima kingdom' },
+            { id: 72, session: 4, stage: 'wajib', no: 72, text: 'Apa nama gas yang paling banyak terdapat dalam atmosfer bumi?', answer: 'Nitrogen' },
+            { id: 73, session: 4, stage: 'wajib', no: 73, text: 'Apa nama negara yang memiliki Tembok Besar?', answer: 'Tiongkok' },
+            { id: 74, session: 4, stage: 'wajib', no: 74, text: 'Apa nama proses perubahan wujud zat dari cair menjadi padat?', answer: 'Pembekuan' },
+            { id: 75, session: 4, stage: 'wajib', no: 75, text: 'Apa nama bilangan yang merupakan hasil penjumlahan semua faktor positifnya selain dirinya sendiri sama dengan bilangan itu?', answer: 'Bilangan sempurna' },
+            { id: 76, session: 4, stage: 'wajib', no: 76, text: 'Apa nama organisasi internasional yang menangani kesehatan dunia?', answer: 'WHO' },
+            { id: 77, session: 4, stage: 'wajib', no: 77, text: 'Apa nama alat untuk mengukur massa benda?', answer: 'Neraca' },
+
+            // SESI 4 — Tahap 2: Soal Lemparan (8 Soal)
+            { id: 78, session: 4, stage: 'lemparan', no: 78, text: 'Apa nama proses pemisahan campuran berdasarkan perbedaan titik didih?', answer: 'Distilasi' },
+            { id: 79, session: 4, stage: 'lemparan', no: 79, text: 'Apa nama alat untuk mengukur kuat arus listrik?', answer: 'Amperemeter' },
+            { id: 80, session: 4, stage: 'lemparan', no: 80, text: 'Apa nama fenomena naiknya permukaan air laut akibat pemanasan global?', answer: 'Kenaikan muka air laut' },
+            { id: 81, session: 4, stage: 'lemparan', no: 81, text: 'Apa nama lapisan atmosfer yang mengandung konsentrasi ozon terbesar?', answer: 'Stratosfer' },
+            { id: 82, session: 4, stage: 'lemparan', no: 82, text: 'Apa nama negara yang memiliki kota suci Makkah dan Madinah?', answer: 'Arab Saudi' },
+            { id: 83, session: 4, stage: 'lemparan', no: 83, text: 'Apa nama proses pembentukan sel kelamin melalui pembelahan reduksi?', answer: 'Meiosis' },
+            { id: 84, session: 4, stage: 'lemparan', no: 84, text: 'Apa nama satuan internasional untuk gaya?', answer: 'Newton' },
+            { id: 841, session: 4, stage: 'lemparan', no: 841, text: 'Apa nama ibu kota dari negara Peru?', answer: 'Lima' },
+
+            // SESI 5 — Tahap 1: Soal Wajib (12 Soal)
+            { id: 85, session: 5, stage: 'wajib', no: 85, text: 'Apa nama planet yang dikenal sebagai planet merah?', answer: 'Mars' },
+            { id: 86, session: 5, stage: 'wajib', no: 86, text: 'Apa nama alat untuk mengukur tekanan darah?', answer: 'Sfigmomanometer atau tensimeter' },
+            { id: 87, session: 5, stage: 'wajib', no: 87, text: 'Apa nama proses perubahan wujud zat dari padat menjadi cair?', answer: 'Peleburan' },
+            { id: 88, session: 5, stage: 'wajib', no: 88, text: 'Apa nama negara yang memiliki Patung Liberty?', answer: 'Amerika Serikat' },
+            { id: 89, session: 5, stage: 'wajib', no: 89, text: 'Apa nama ibu kota Australia?', answer: 'Canberra' },
+            { id: 90, session: 5, stage: 'wajib', no: 90, text: 'Apa nama unsur kimia dengan lambang Na?', answer: 'Natrium' },
+            { id: 91, session: 5, stage: 'wajib', no: 91, text: 'Apa nama organ tubuh manusia yang berfungsi menghasilkan empedu?', answer: 'Hati' },
+            { id: 92, session: 5, stage: 'wajib', no: 92, text: 'Apa nama gaya tarik bumi terhadap benda?', answer: 'Gravitasi' },
+            { id: 93, session: 5, stage: 'wajib', no: 93, text: 'Apa nama alat untuk mengukur intensitas cahaya?', answer: 'Lux meter' },
+            { id: 94, session: 5, stage: 'wajib', no: 94, text: 'Apa nama negara yang memiliki Gunung Fuji?', answer: 'Jepang' },
+            { id: 95, session: 5, stage: 'wajib', no: 95, text: 'Apa nama proses perubahan wujud zat dari gas menjadi padat?', answer: 'Deposisi' },
+            { id: 96, session: 5, stage: 'wajib', no: 96, text: 'Apa nama organisasi dunia yang mengatur perdagangan internasional?', answer: 'WTO' },
+
+            // SESI 5 — Tahap 2: Soal Lemparan (9 Soal No 97 - 105)
+            { id: 97, session: 5, stage: 'lemparan', no: 97, text: 'Apa nama teori yang menyatakan bahwa semua makhluk hidup berasal dari makhluk hidup sebelumnya?', answer: 'Teori biogenesis' },
+            { id: 98, session: 5, stage: 'lemparan', no: 98, text: 'Apa nama satuan internasional untuk daya?', answer: 'Watt' },
+            { id: 99, session: 5, stage: 'lemparan', no: 99, text: 'Apa nama negara yang memiliki kota Istanbul dan Ankara?', answer: 'Turki' },
+            { id: 100, session: 5, stage: 'lemparan', no: 100, text: 'Apa nama proses perubahan energi cahaya menjadi energi kimia pada tumbuhan?', answer: 'Fotosintesis' },
+            { id: 101, session: 5, stage: 'lemparan', no: 101, text: 'Apa nama bilangan yang hasil kuadratnya 144 dan bernilai positif?', answer: '12' },
+            { id: 102, session: 5, stage: 'lemparan', no: 102, text: 'Apa nama gas yang digunakan tumbuhan dalam proses fotosintesis?', answer: 'Karbon dioksida' },
+            { id: 103, session: 5, stage: 'lemparan', no: 103, text: 'Apa nama alat untuk mengukur kelembapan tanah?', answer: 'Soil moisture meter' },
+            { id: 104, session: 5, stage: 'lemparan', no: 104, text: 'Apa nama proses pemisahan campuran berdasarkan perbedaan ukuran partikel menggunakan penyaring?', answer: 'Filtrasi' },
+            { id: 105, session: 5, stage: 'lemparan', no: 105, text: 'Apa nama negara yang memiliki kota Rio de Janeiro dan São Paulo?', answer: 'Brasil' },
+
+            // ================= BABAK FINAL OFFICIAL QUESTIONS =================
+            // BABAK FINAL — Tahap 1: Soal Lemparan (20 Soal, 4 Soal per Kelas)
+            { id: 201, stage: 'final_lemparan', targetClassIndex: 1, no: 1, text: 'Siapakah ilmuwan yang menemukan hukum gravitasi universal?', answer: 'Isaac Newton' },
+            { id: 202, stage: 'final_lemparan', targetClassIndex: 1, no: 2, text: 'Apa nama perjanjian yang mengakhiri Perang Dunia I secara resmi antara Jerman dan pihak Sekutu pada tahun 1919?', answer: 'Perjanjian Versailles' },
+            { id: 203, stage: 'final_lemparan', targetClassIndex: 1, no: 3, text: 'Jika sebuah benda bermassa 4 kg bergerak dengan kecepatan 5 m/s, berapakah energi kinetiknya?', answer: '50 joule' },
+            { id: 204, stage: 'final_lemparan', targetClassIndex: 1, no: 4, text: 'Apa nama proses pembentukan batuan dari magma yang mengalami pendinginan dan pembekuan?', answer: 'Pembentukan batuan beku' },
+
+            { id: 205, stage: 'final_lemparan', targetClassIndex: 2, no: 5, text: 'Siapakah tokoh yang dikenal sebagai pelopor teori evolusi melalui seleksi alam?', answer: 'Charles Darwin' },
+            { id: 206, stage: 'final_lemparan', targetClassIndex: 2, no: 6, text: 'Apa nama ibu kota negara Kazakhstan?', answer: 'Astana' },
+            { id: 207, stage: 'final_lemparan', targetClassIndex: 2, no: 7, text: 'Berapakah nilai 30% dari 75?', answer: '22,5' },
+            { id: 208, stage: 'final_lemparan', targetClassIndex: 2, no: 8, text: 'Apa nama proses pemisahan kromosom homolog pada pembelahan meiosis?', answer: 'Anafase I' },
+
+            { id: 209, stage: 'final_lemparan', targetClassIndex: 3, no: 9, text: 'Apa nama sistem ekonomi yang kegiatan produksinya sebagian besar dikuasai oleh negara?', answer: 'Sistem ekonomi komando atau terpusat' },
+            { id: 210, stage: 'final_lemparan', targetClassIndex: 3, no: 10, text: 'Apa nama sungai yang mengalir melalui Mesir dan dikenal sebagai salah satu sungai terpanjang di dunia?', answer: 'Sungai Nil' },
+            { id: 211, stage: 'final_lemparan', targetClassIndex: 3, no: 11, text: 'Berapakah pH larutan HCl 0,001 M jika terionisasi sempurna?', answer: '3' },
+            { id: 212, stage: 'final_lemparan', targetClassIndex: 3, no: 12, text: 'Siapakah tokoh yang mengemukakan teori lempeng tektonik modern?', answer: 'Alfred Wegener (pelopor teori pergeseran benua)' },
+
+            { id: 213, stage: 'final_lemparan', targetClassIndex: 4, no: 13, text: 'Apa nama organisasi internasional yang bermarkas di Den Haag dan bertugas menyelesaikan sengketa hukum antarnegara?', answer: 'Mahkamah Internasional (ICJ)' },
+            { id: 214, stage: 'final_lemparan', targetClassIndex: 4, no: 14, text: 'Apa nama proses perubahan nitrogen atmosfer menjadi senyawa yang dapat dimanfaatkan tumbuhan?', answer: 'Fiksasi nitrogen' },
+            { id: 215, stage: 'final_lemparan', targetClassIndex: 4, no: 15, text: 'Berapakah nilai dari log 100?', answer: '2' },
+            { id: 216, stage: 'final_lemparan', targetClassIndex: 4, no: 16, text: 'Apa nama teori yang menjelaskan bahwa alam semesta bermula dari keadaan sangat panas dan padat lalu mengembang?', answer: 'Teori Big Bang' },
+
+            { id: 217, stage: 'final_lemparan', targetClassIndex: 5, no: 17, text: 'Siapakah tokoh Indonesia yang dikenal sebagai pelopor pendidikan Taman Siswa?', answer: 'Ki Hadjar Dewantara' },
+            { id: 218, stage: 'final_lemparan', targetClassIndex: 5, no: 18, text: 'Apa nama negara yang memiliki ibu kota Ulaanbaatar?', answer: 'Mongolia' },
+            { id: 219, stage: 'final_lemparan', targetClassIndex: 5, no: 19, text: 'Sebuah benda memiliki massa 2 kg dan energi kinetik 100 joule. Berapakah kecepatan benda tersebut?', answer: '10 m/s' },
+            { id: 220, stage: 'final_lemparan', targetClassIndex: 5, no: 20, text: 'Apa nama enzim yang berfungsi memecah protein menjadi peptida di lambung?', answer: 'Pepsin' },
+
+            // BABAK FINAL — Tahap 2: Soal Rebutan (15 Soal)
+            { id: 221, stage: 'final_rebutan', no: 21, text: 'Siapakah tokoh yang mengemukakan teori heliosentris bahwa bumi mengelilingi matahari?', answer: 'Nicolaus Copernicus' },
+            { id: 222, stage: 'final_rebutan', no: 22, text: 'Apa nama unsur kimia dengan nomor atom 26?', answer: 'Besi' },
+            { id: 223, stage: 'final_rebutan', no: 23, text: 'Apa nama ibu kota negara Ethiopia?', answer: 'Addis Ababa' },
+            { id: 224, stage: 'final_rebutan', no: 24, text: 'Berapakah nilai 25% dari 80?', answer: '20' },
+            { id: 225, stage: 'final_rebutan', no: 25, text: 'Apa nama organel sel yang menjadi tempat berlangsungnya respirasi sel dan menghasilkan ATP?', answer: 'Mitokondria' },
+            { id: 226, stage: 'final_rebutan', no: 26, text: 'Apa nama tipe data yang hanya memiliki dua kemungkinan nilai yaitu benar (true) atau salah (false)?', answer: 'Boolean' },
+            { id: 227, stage: 'final_rebutan', no: 27, text: 'Apa nama lapisan atmosfer yang berfungsi menyerap sebagian besar radiasi ultraviolet matahari?', answer: 'Lapisan ozon' },
+            { id: 228, stage: 'final_rebutan', no: 28, text: 'Berapakah nilai sinus 30 derajat?', answer: '1/2' },
+            { id: 229, stage: 'final_rebutan', no: 29, text: 'Apa nama proses pembentukan gamet pada organisme yang berlangsung melalui pembelahan meiosis?', answer: 'Gametogenesis' },
+            { id: 300, stage: 'final_rebutan', no: 30, text: 'Apa nama perjanjian yang menjadi dasar pembentukan Masyarakat Ekonomi Eropa pada 1957?', answer: 'Perjanjian Roma' },
+            { id: 301, stage: 'final_rebutan', no: 31, text: 'Apa nama satuan internasional untuk frekuensi?', answer: 'Hertz' },
+            { id: 302, stage: 'final_rebutan', no: 32, text: 'Apa nama negara yang memiliki ibu kota Tbilisi?', answer: 'Georgia' },
+            { id: 303, stage: 'final_rebutan', no: 33, text: 'Berapakah hasil konversi dari bilangan biner 1010 ke dalam sistem bilangan desimal?', answer: '10' },
+            { id: 304, stage: 'final_rebutan', no: 34, text: 'Apa nama proses pemisahan campuran berdasarkan perbedaan afinitas zat terhadap fase diam dan fase gerak?', answer: 'Kromatografi' },
+            { id: 305, stage: 'final_rebutan', no: 35, text: 'Apa nama lembaga negara Indonesia yang berwenang menguji undang-undang terhadap UUD 1945?', answer: 'Mahkamah Konstitusi' }
+        ];
+
+        // State Management
+        let teamsData = [];
+        let questionBank = [...OFFICIAL_QUESTIONS];
+        let currentActiveSession = 1; // 1 to 5
+        let currentActiveStage = 'wajib'; // 'wajib' or 'lemparan'
+        let currentQuestionIndex = 0;
+        let lockedBuzzerTeamId = null;
+
+        // Babak Final States
+        let activeFinalStage = 'lemparan'; // 'lemparan' or 'rebutan'
+        let currentFinalLemparIndex = 0;
+        let currentFinalRebutanIndex = 0;
+        let currentLeaderboardView = 'final'; // 'final' or 'penyisihan'
+
+        let timerInterval = null;
+        let timerSeconds = 0;
+
+        // Sound Synthesis (Tone.js)
+        const synth = new Tone.Synth().toDestination();
+
+        function playBuzzerSound() {
+            try {
+                Tone.start();
+                synth.triggerAttackRelease("C5", "8n");
+                setTimeout(() => synth.triggerAttackRelease("G5", "8n"), 100);
+            } catch(e){}
+        }
+
+        function playCorrectSound() {
+            try {
+                Tone.start();
+                synth.triggerAttackRelease("E5", "16n");
+                setTimeout(() => synth.triggerAttackRelease("G5", "8n"), 120);
+            } catch(e){}
+        }
+
+        function playWrongSound() {
+            try {
+                Tone.start();
+                synth.triggerAttackRelease("C3", "4n");
+            } catch(e){}
+        }
+
+        // Initialize App
+        window.onload = function() {
+            initTeams();
+            renderSetupSessions();
+            renderQuestionBankPreview();
+            renderWajibSessionButtons();
+            renderWajibTeamsScoring();
+            autoQualifyFinalists();
+            updateLeaderboard();
+            loadCurrentQuestion();
+        };
+
+        // Initialize 21 teams
+        function initTeams() {
+            teamsData = DEFAULT_CLASSES.map((item, index) => {
+                return {
+                    id: index + 1,
+                    name: item.name,
+                    session: item.session,
+                    wajibScore: 0,
+                    lemparanScore: 0,
+                    finalScore: 0,
+                    isFinalist: false,
+                    get penyisihanScore() { return this.wajibScore + this.lemparanScore; },
+                    get totalScore() { return this.wajibScore + this.lemparanScore + this.finalScore; }
+                };
+            });
+        }
+
+        // Auto Qualify 1 winner per session (5 finalists total)
+        function autoQualifyFinalists() {
+            teamsData.forEach(t => t.isFinalist = false);
+
+            for (let s = 1; s <= 5; s++) {
+                const sessionTeams = teamsData.filter(t => t.session === s);
+                if (sessionTeams.length > 0) {
+                    sessionTeams.sort((a, b) => b.penyisihanScore - a.penyisihanScore);
+                    sessionTeams[0].isFinalist = true; // Top 1 of session
+                }
+            }
+
+            renderFinalistsBadges();
+            renderFinalLemparScoring();
+            renderRebutanBuzzers();
+        }
+
+        function getFinalists() {
+            return teamsData.filter(t => t.isFinalist);
+        }
+
+        function renderFinalistsBadges() {
+            const container = document.getElementById('finalists-badges-bar');
+            container.innerHTML = '';
+            const finalists = getFinalists();
+
+            finalists.forEach((f, idx) => {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-amber-500/40 p-3 rounded-xl flex flex-col justify-between space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-amber-400 uppercase">KELAS ${idx + 1} (SESI ${f.session})</span>
+                            <span class="px-1.5 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] rounded font-bold">FINALIS</span>
+                        </div>
+                        <div class="font-bold text-white text-sm truncate">${f.name}</div>
+                        <div class="text-xs text-brand-400 font-mono font-bold">Total: ${f.totalScore} pts</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Render Setup Page Session Cards (5 Sessions)
+        function renderSetupSessions() {
+            const container = document.getElementById('sessions-setup-grid');
+            container.innerHTML = '';
+
+            for (let s = 1; s <= 5; s++) {
+                const sessionTeams = teamsData.filter(t => t.session === s);
+                const countBadge = sessionTeams.length;
+
+                let cardHtml = `
+                    <div class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-700/60 pb-2">
+                            <span class="font-bold text-brand-300 text-sm">SESI ${s}</span>
+                            <span class="px-2 py-0.5 bg-slate-700 text-slate-300 text-xs font-semibold rounded-md">${countBadge} Kelas</span>
+                        </div>
+                        <div class="space-y-1.5 max-h-56 overflow-y-auto">
+                `;
+
+                sessionTeams.forEach(t => {
+                    const finalistBadge = t.isFinalist ? `<i class="fa-solid fa-crown text-amber-400 ml-1"></i>` : '';
+                    cardHtml += `
+                        <div class="flex items-center justify-between text-xs bg-slate-900/60 px-3 py-2 rounded-lg border border-slate-800">
+                            <span class="font-semibold text-slate-200">${t.name} ${finalistBadge}</span>
+                            <span class="font-mono text-brand-400 font-bold">${t.totalScore} pts</span>
+                        </div>
+                    `;
+                });
+
+                cardHtml += `
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            }
+        }
+
+        // Navigation Tab Switcher
+        function switchTab(tabName) {
+            document.querySelectorAll('section[id^="page-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-400');
+            });
+
+            document.getElementById(`page-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow');
+            activeBtn.classList.remove('text-slate-400');
+
+            if (tabName === 'rekap') updateLeaderboard();
+            if (tabName === 'wajib') {
+                renderWajibTeamsScoring();
+                loadCurrentQuestion();
+            }
+            if (tabName === 'final') {
+                autoQualifyFinalists();
+                loadFinalQuestion();
+            }
+        }
+
+        // Switch Final Stage Sub-Tabs (Lemparan vs Rebutan)
+        function switchFinalStage(stage) {
+            activeFinalStage = stage;
+            const btnL = document.getElementById('final-stage-tab-lemparan');
+            const btnR = document.getElementById('final-stage-tab-rebutan');
+            const viewL = document.getElementById('final-stage-lemparan-view');
+            const viewR = document.getElementById('final-stage-rebutan-view');
+            const penBox = document.getElementById('rebutan-penalty-box');
+
+            if (stage === 'lemparan') {
+                btnL.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow transition';
+                btnR.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition';
+                viewL.classList.remove('hidden');
+                viewR.classList.add('hidden');
+                penBox.classList.add('hidden');
+            } else {
+                btnR.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow transition';
+                btnL.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition';
+                viewR.classList.remove('hidden');
+                viewL.classList.add('hidden');
+                penBox.classList.remove('hidden');
+                penBox.classList.add('flex');
+            }
+            loadFinalQuestion();
+        }
+
+        // Load Questions for Final Stage
+        function getFinalLemparQuestions() {
+            return questionBank.filter(q => q.stage === 'final_lemparan');
+        }
+
+        function getFinalRebutanQuestions() {
+            return questionBank.filter(q => q.stage === 'final_rebutan');
+        }
+
+        function loadFinalQuestion() {
+            if (activeFinalStage === 'lemparan') {
+                const questions = getFinalLemparQuestions();
+                if (questions.length === 0) return;
+                
+                if (currentFinalLemparIndex < 0) currentFinalLemparIndex = 0;
+                if (currentFinalLemparIndex >= questions.length) currentFinalLemparIndex = questions.length - 1;
+
+                const q = questions[currentFinalLemparIndex];
+                document.getElementById('final-lempar-q-no').innerText = `Soal No. ${q.no}`;
+                document.getElementById('final-lempar-target-class').innerText = `Giliran: Kelas ${q.targetClassIndex}`;
+                document.getElementById('final-lempar-progress').innerText = `Soal ${currentFinalLemparIndex + 1} dari ${questions.length}`;
+                document.getElementById('final-lempar-text').innerText = q.text;
+                document.getElementById('final-lempar-ans-text').innerText = q.answer;
+
+                document.getElementById('final-lempar-ans-box').classList.add('hidden');
+                document.getElementById('final-lempar-toggle-ans-btn').innerText = 'Tampilkan Kunci Jawaban';
+            } else {
+                const questions = getFinalRebutanQuestions();
+                if (questions.length === 0) return;
+
+                if (currentFinalRebutanIndex < 0) currentFinalRebutanIndex = 0;
+                if (currentFinalRebutanIndex >= questions.length) currentFinalRebutanIndex = questions.length - 1;
+
+                const q = questions[currentFinalRebutanIndex];
+                document.getElementById('final-rebutan-progress').innerText = `Soal ${currentFinalRebutanIndex + 1} dari ${questions.length}`;
+                document.getElementById('rebutan-question-text').innerText = `[No. ${q.no}] ${q.text}`;
+                document.getElementById('rebutan-answer-text').innerText = q.answer;
+
+                document.getElementById('rebutan-answer-box').classList.add('hidden');
+                document.getElementById('rebutan-toggle-ans-btn-text').innerText = 'Tampilkan Jawaban';
+                resetBuzzer();
+            }
+        }
+
+        function nextFinalLemparQ() {
+            const questions = getFinalLemparQuestions();
+            if (currentFinalLemparIndex < questions.length - 1) {
+                currentFinalLemparIndex++;
+                loadFinalQuestion();
+            }
+        }
+
+        function prevFinalLemparQ() {
+            if (currentFinalLemparIndex > 0) {
+                currentFinalLemparIndex--;
+                loadFinalQuestion();
+            }
+        }
+
+        function toggleFinalLemparAns() {
+            const box = document.getElementById('final-lempar-ans-box');
+            const btnText = document.getElementById('final-lempar-toggle-ans-btn');
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                btnText.innerText = 'Sembunyikan Kunci Jawaban';
+            } else {
+                box.classList.add('hidden');
+                btnText.innerText = 'Tampilkan Kunci Jawaban';
+            }
+        }
+
+        function renderFinalLemparScoring() {
+            const container = document.getElementById('final-lempar-scoring-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            const finalists = getFinalists();
+
+            finalists.forEach((team, idx) => {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-[10px] font-bold text-amber-400 uppercase">KELAS ${idx + 1}</span>
+                                <h4 class="font-bold text-white text-sm">${team.name}</h4>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-slate-400 block font-mono">Poin Final</span>
+                                <span class="font-mono font-bold text-amber-400 text-sm">${team.finalScore}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-1.5 pt-1">
+                            <button onclick="updateScore(${team.id}, 'final', 100)" class="py-1.5 px-2 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 font-bold rounded text-xs transition">
+                                +100 (Benar)
+                            </button>
+                            <button onclick="updateScore(${team.id}, 'final', -100)" class="py-1.5 px-2 bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 border border-rose-500/20 font-semibold rounded text-xs transition">
+                                -100 (Koreksi)
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Render Session Selector Buttons for Babak Penyisihan (1-5)
+        function renderWajibSessionButtons() {
+            const container = document.getElementById('session-select-buttons');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const sessionLabels = [
+                { s: 1, info: "4 Kelas" },
+                { s: 2, info: "4 Kelas" },
+                { s: 3, info: "5 Kelas" },
+                { s: 4, info: "4 Kelas" },
+                { s: 5, info: "4 Kelas" }
+            ];
+
+            sessionLabels.forEach(item => {
+                const s = item.s;
+                const isActive = currentActiveSession === s;
+                const activeStyle = isActive 
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/40 font-black ring-4 ring-amber-400/50 scale-105 border-amber-300' 
+                    : 'bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 font-bold border border-slate-700';
+                
+                container.innerHTML += `
+                    <button onclick="selectWajibSession(${s})" class="py-3 px-2 rounded-xl text-xs sm:text-sm ${activeStyle} transition-all duration-200 flex flex-col items-center justify-center gap-1 w-full shadow-md">
+                        <div class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-flag ${isActive ? 'text-slate-950' : 'text-amber-400'}"></i> 
+                            <span>SESI ${s}</span>
+                        </div>
+                        <span class="text-[10px] font-medium opacity-80">${item.info}</span>
+                    </button>
+                `;
+            });
+        }
+
+        function selectWajibSession(sessionNum) {
+            currentActiveSession = sessionNum;
+            currentQuestionIndex = 0;
+            renderWajibSessionButtons();
+            renderWajibTeamsScoring();
+            loadCurrentQuestion();
+        }
+
+        function selectStage(stageName) {
+            currentActiveStage = stageName;
+            currentQuestionIndex = 0;
+
+            const btnW = document.getElementById('stage-btn-wajib');
+            const btnL = document.getElementById('stage-btn-lemparan');
+
+            if (stageName === 'wajib') {
+                btnW.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white transition border border-slate-700';
+                btnL.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400 hover:text-white transition border border-slate-700';
+            } else {
+                btnL.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 text-white transition border border-slate-700';
+                btnW.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400 hover:text-white transition border border-slate-700';
+            }
+
+            loadCurrentQuestion();
+        }
+
+        // Render Active Session Teams Scoring Cards
+        function renderWajibTeamsScoring() {
+            const container = document.getElementById('wajib-teams-scoring-grid');
+            document.getElementById('active-session-label').innerText = currentActiveSession;
+            container.innerHTML = '';
+
+            const sessionTeams = teamsData.filter(t => t.session === currentActiveSession);
+
+            sessionTeams.forEach((team) => {
+                container.innerHTML += `
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-3 relative overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">${team.name}</h4>
+                                <div class="text-[11px] text-slate-400 mt-0.5">
+                                    Wajib: <strong class="text-brand-400 font-mono">${team.wajibScore}</strong> | Lempar: <strong class="text-amber-400 font-mono">${team.lemparanScore}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action buttons for points -->
+                        <div class="space-y-2 pt-1">
+                            <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Soal Wajib</div>
+                            <div class="grid grid-cols-2 gap-1.5">
+                                <button onclick="updateScore(${team.id}, 'wajib', 100)" class="py-1 px-2 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 font-bold rounded text-[11px] transition">
+                                    +100 (Benar)
+                                </button>
+                                <button onclick="updateScore(${team.id}, 'wajib', -100)" class="py-1 px-2 bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 border border-rose-500/20 font-semibold rounded text-[11px] transition">
+                                    -100 (Koreksi)
+                                </button>
+                            </div>
+
+                            <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider pt-1">Soal Lemparan</div>
+                            <div class="grid grid-cols-2 gap-1.5">
+                                <button onclick="updateScore(${team.id}, 'lemparan', 50)" class="py-1 px-2 bg-amber-600/20 hover:bg-amber-600/40 text-amber-300 border border-amber-500/30 font-bold rounded text-[11px] transition">
+                                    +50 (Benar)
+                                </button>
+                                <button onclick="updateScore(${team.id}, 'lemparan', -50)" class="py-1 px-2 bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 font-semibold rounded text-[11px] transition">
+                                    -50 (Koreksi)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Update score logic
+        function updateScore(teamId, round, delta) {
+            const team = teamsData.find(t => t.id === teamId);
+            if (!team) return;
+
+            if (round === 'wajib') {
+                team.wajibScore = Math.max(0, team.wajibScore + delta);
+            } else if (round === 'lemparan') {
+                team.lemparanScore = Math.max(0, team.lemparanScore + delta);
+            } else if (round === 'final') {
+                team.finalScore += delta;
+            }
+
+            if (delta > 0) playCorrectSound();
+            else if (delta < 0) playWrongSound();
+
+            renderWajibTeamsScoring();
+            renderFinalLemparScoring();
+            renderSetupSessions();
+            renderRebutanBuzzers();
+            renderFinalistsBadges();
+            updateLeaderboard();
+        }
+
+        // Get filtered active questions list
+        function getFilteredQuestions() {
+            return questionBank.filter(q => q.session === currentActiveSession && q.stage === currentActiveStage);
+        }
+
+        // Load active question into view
+        function loadCurrentQuestion() {
+            const questions = getFilteredQuestions();
+            const textEl = document.getElementById('wajib-question-text');
+            const ansEl = document.getElementById('wajib-answer-text');
+            const progressBadge = document.getElementById('q-progress-badge');
+            const qNoBadge = document.getElementById('q-no-badge');
+            const stageLabel = document.getElementById('current-stage-label');
+            const watermark = document.getElementById('stage-bg-watermark');
+
+            if (!questions || questions.length === 0) {
+                textEl.innerText = "Tidak ada soal untuk sesi & tahap ini.";
+                ansEl.innerText = "-";
+                progressBadge.innerText = "0 Soal";
+                return;
+            }
+
+            if (currentQuestionIndex < 0) currentQuestionIndex = 0;
+            if (currentQuestionIndex >= questions.length) currentQuestionIndex = questions.length - 1;
+
+            const q = questions[currentQuestionIndex];
+            textEl.innerText = q.text;
+            ansEl.innerText = q.answer;
+            qNoBadge.innerText = `Soal No. ${q.no}`;
+            progressBadge.innerText = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+
+            stageLabel.innerText = `Sesi ${currentActiveSession} — Tahap: ${currentActiveStage.toUpperCase()}`;
+            watermark.innerText = currentActiveStage.toUpperCase();
+
+            // Auto hide answer box
+            document.getElementById('wajib-answer-box').classList.add('hidden');
+            document.getElementById('toggle-ans-btn-text').innerText = 'Tampilkan Kunci Jawaban';
+        }
+
+        function nextWajibQuestion() {
+            const questions = getFilteredQuestions();
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadCurrentQuestion();
+            }
+        }
+
+        function prevWajibQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadCurrentQuestion();
+            }
+        }
+
+        function toggleWajibAnswer() {
+            const box = document.getElementById('wajib-answer-box');
+            const btnText = document.getElementById('toggle-ans-btn-text');
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                btnText.innerText = 'Sembunyikan Kunci Jawaban';
+            } else {
+                box.classList.add('hidden');
+                btnText.innerText = 'Tampilkan Kunci Jawaban';
+            }
+        }
+
+        // Timer for Wajib
+        function startWajibTimer(seconds) {
+            clearInterval(timerInterval);
+            timerSeconds = seconds;
+            document.getElementById('wajib-timer-display').innerText = `${timerSeconds}s`;
+
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                document.getElementById('wajib-timer-display').innerText = `${timerSeconds}s`;
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    playWrongSound();
+                }
+            }, 1000);
+        }
+
+        function stopWajibTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('wajib-timer-display').innerText = `10s`;
+        }
+
+        // ================= BABAK FINAL BUZZER LOGIC =================
+        function renderRebutanBuzzers() {
+            const container = document.getElementById('rebutan-buzzers-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            const finalists = getFinalists();
+
+            finalists.forEach((team, idx) => {
+                const isLocked = lockedBuzzerTeamId === team.id;
+                const isDisabled = lockedBuzzerTeamId !== null && !isLocked;
+
+                container.innerHTML += `
+                    <button onclick="pressBuzzer(${team.id})" ${isDisabled ? 'disabled' : ''} 
+                        class="p-3 rounded-xl border text-left transition relative flex justify-between items-center ${
+                            isLocked 
+                            ? 'bg-rose-600 border-rose-400 text-white shadow-lg shadow-rose-600/40 ring-4 ring-rose-500/50 scale-105' 
+                            : 'bg-slate-900/90 border-slate-700/80 hover:bg-slate-700 text-slate-200 hover:border-amber-400'
+                        } ${isDisabled ? 'opacity-40 cursor-not-allowed' : ''}">
+                        
+                        <div>
+                            <span class="text-[10px] font-bold text-amber-400 uppercase block">KELAS ${idx + 1} (SESI ${team.session})</span>
+                            <div class="font-bold text-sm text-white">${team.name}</div>
+                        </div>
+
+                        <span class="text-sm font-mono font-bold ${isLocked ? 'text-white' : 'text-amber-400'}">${team.totalScore} pts</span>
+                    </button>
+                `;
+            });
+        }
+
+        function pressBuzzer(teamId) {
+            if (lockedBuzzerTeamId !== null) return;
+
+            lockedBuzzerTeamId = teamId;
+            const team = teamsData.find(t => t.id === teamId);
+
+            playBuzzerSound();
+
+            document.getElementById('buzzer-idle-state').classList.add('hidden');
+            document.getElementById('buzzer-locked-state').classList.remove('hidden');
+            document.getElementById('locked-team-name').innerText = team.name;
+
+            const penaltyVal = document.getElementById('rebutan-penalty-val').value;
+            document.getElementById('btn-penalty-label').innerText = penaltyVal;
+
+            renderRebutanBuzzers();
+            startRebutanTimer(10);
+        }
+
+        function resetBuzzer() {
+            lockedBuzzerTeamId = null;
+            document.getElementById('buzzer-locked-state').classList.add('hidden');
+            document.getElementById('buzzer-idle-state').classList.remove('hidden');
+            clearInterval(timerInterval);
+            document.getElementById('rebutan-timer-display').innerText = "10s";
+            renderRebutanBuzzers();
+        }
+
+        function scoreRebutanLocked(isCorrect) {
+            if (lockedBuzzerTeamId === null) return;
+            const penaltyVal = parseInt(document.getElementById('rebutan-penalty-val').value, 10);
+            const scoreDelta = isCorrect ? 100 : penaltyVal;
+
+            updateScore(lockedBuzzerTeamId, 'final', scoreDelta);
+            resetBuzzer();
+        }
+
+        function nextRebutanQuestion() {
+            const questions = getFinalRebutanQuestions();
+            if (currentFinalRebutanIndex < questions.length - 1) {
+                currentFinalRebutanIndex++;
+                loadFinalQuestion();
+            }
+        }
+
+        function prevRebutanQuestion() {
+            if (currentFinalRebutanIndex > 0) {
+                currentFinalRebutanIndex--;
+                loadFinalQuestion();
+            }
+        }
+
+        function toggleRebutanAnswer() {
+            const box = document.getElementById('rebutan-answer-box');
+            const btnText = document.getElementById('rebutan-toggle-ans-btn-text');
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                btnText.innerText = 'Sembunyikan Jawaban';
+            } else {
+                box.classList.add('hidden');
+                btnText.innerText = 'Tampilkan Jawaban';
+            }
+        }
+
+        function startRebutanTimer(seconds) {
+            clearInterval(timerInterval);
+            timerSeconds = seconds;
+            document.getElementById('rebutan-timer-display').innerText = `${timerSeconds}s`;
+
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                document.getElementById('rebutan-timer-display').innerText = `${timerSeconds}s`;
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    playWrongSound();
+                }
+            }, 1000);
+        }
+
+        // ================= KLASEMEN / LEADERBOARD =================
+        function switchLeaderboardMode(mode) {
+            currentLeaderboardView = mode;
+            const btnF = document.getElementById('lb-mode-btn-final');
+            const btnP = document.getElementById('lb-mode-btn-penyisihan');
+
+            if (mode === 'final') {
+                btnF.className = 'px-4 py-2 bg-amber-500 text-slate-950 rounded-xl text-xs font-extrabold shadow transition';
+                btnP.className = 'px-4 py-2 bg-slate-800 text-slate-400 hover:text-white border border-slate-700 rounded-xl text-xs font-bold transition';
+            } else {
+                btnP.className = 'px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-extrabold shadow transition';
+                btnF.className = 'px-4 py-2 bg-slate-800 text-slate-400 hover:text-white border border-slate-700 rounded-xl text-xs font-bold transition';
+            }
+
+            updateLeaderboard();
+        }
+
+        function updateLeaderboard() {
+            const podiumContainer = document.getElementById('podium-highlights');
+            podiumContainer.innerHTML = '';
+
+            const tableHead = document.getElementById('leaderboard-table-head');
+            const tbody = document.getElementById('leaderboard-table-body');
+            tbody.innerHTML = '';
+
+            const headerTitle = document.getElementById('table-header-title');
+            const headerSub = document.getElementById('table-header-subtitle');
+
+            if (currentLeaderboardView === 'final') {
+                // Dedicated Final Leaderboard (Only 5 Finalists, Sorted ONLY by finalScore)
+                headerTitle.innerHTML = `<i class="fa-solid fa-crown text-amber-400"></i> KLASEMEN BABAK FINAL (5 FINALIS)`;
+                headerSub.innerText = `Skor dihitung MURNI dari hasil Babak Final (Tahap I & Tahap II Final)`;
+
+                const finalists = getFinalists().sort((a, b) => b.finalScore - a.finalScore);
+
+                tableHead.innerHTML = `
+                    <tr class="bg-slate-950/80 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
+                        <th class="p-4 text-center w-16">Peringkat</th>
+                        <th class="p-4">Nama Kelas Finalis</th>
+                        <th class="p-4 text-center">Sesi Asal</th>
+                        <th class="p-4 text-center">Nilai Penyisihan</th>
+                        <th class="p-4 text-center text-amber-400 font-extrabold text-sm">TOTAL POIN FINAL</th>
+                        <th class="p-4 text-center">Status</th>
+                    </tr>
+                `;
+
+                const podiumColors = [
+                    { bg: 'from-amber-500/20 to-yellow-600/10 border-amber-500/40', badge: 'bg-amber-500 text-slate-950', rank: 'JUARA 1 FINAL 🏆' },
+                    { bg: 'from-slate-400/20 to-slate-500/10 border-slate-400/40', badge: 'bg-slate-300 text-slate-950', rank: 'JUARA 2 FINAL 🥈' },
+                    { bg: 'from-amber-700/20 to-amber-800/10 border-amber-700/40', badge: 'bg-amber-700 text-white', rank: 'JUARA 3 FINAL 🥉' }
+                ];
+
+                for (let i = 0; i < 3; i++) {
+                    if (finalists[i]) {
+                        const team = finalists[i];
+                        const p = podiumColors[i];
+                        podiumContainer.innerHTML += `
+                            <div class="bg-gradient-to-b ${p.bg} border rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-black ${p.badge}">${p.rank}</span>
+                                    <span class="text-xs text-slate-400 font-semibold">Sesi ${team.session}</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-display font-black text-white">${team.name}</h3>
+                                    <div class="text-2xl font-black font-mono text-amber-400 mt-1">${team.finalScore} <span class="text-xs font-normal text-slate-400">Poin Final</span></div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                finalists.forEach((team, index) => {
+                    const isTop1 = index === 0;
+                    const rankClass = isTop1 ? 'font-bold text-amber-400' : 'text-slate-400';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-800/50 transition">
+                            <td class="p-4 text-center ${rankClass} font-mono font-bold">#${index + 1}</td>
+                            <td class="p-4 font-semibold text-white flex items-center gap-2">
+                                ${team.name}
+                            </td>
+                            <td class="p-4 text-center text-xs text-slate-400">Sesi ${team.session}</td>
+                            <td class="p-4 text-center font-mono text-slate-400 text-xs">${team.penyisihanScore} pts</td>
+                            <td class="p-4 text-center font-mono font-bold text-amber-400 text-lg">${team.finalScore}</td>
+                            <td class="p-4 text-center">
+                                <span class="px-2.5 py-1 bg-amber-500/20 text-amber-300 text-xs rounded-full border border-amber-500/30 font-bold">FINALIS</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+            } else {
+                // Preliminary Leaderboard (21 Classes, Sorted by penyisihanScore)
+                headerTitle.innerHTML = `<i class="fa-solid fa-users text-brand-400"></i> KLASEMEN BABAK PENYISIHAN (21 KELAS)`;
+                headerSub.innerText = `Skor dihitung dari Tahap Wajib & Lemparan Sesi 1–5`;
+
+                const sortedPenyisihan = [...teamsData].sort((a, b) => b.penyisihanScore - a.penyisihanScore);
+
+                tableHead.innerHTML = `
+                    <tr class="bg-slate-950/80 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
+                        <th class="p-4 text-center w-16">Peringkat</th>
+                        <th class="p-4">Nama Kelas / Perwakilan</th>
+                        <th class="p-4 text-center">Sesi Babak</th>
+                        <th class="p-4 text-center">Poin Wajib</th>
+                        <th class="p-4 text-center">Poin Lemparan</th>
+                        <th class="p-4 text-center font-bold text-brand-400">TOTAL PENYISIHAN</th>
+                        <th class="p-4 text-center">Status</th>
+                    </tr>
+                `;
+
+                for (let i = 0; i < 3; i++) {
+                    if (sortedPenyisihan[i]) {
+                        const team = sortedPenyisihan[i];
+                        podiumContainer.innerHTML += `
+                            <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-black bg-brand-600 text-white">PERINGKAT ${i + 1}</span>
+                                    <span class="text-xs text-slate-400 font-semibold">Sesi ${team.session}</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-display font-black text-white">${team.name}</h3>
+                                    <div class="text-2xl font-black font-mono text-brand-400 mt-1">${team.penyisihanScore} <span class="text-xs font-normal text-slate-400">Poin Penyisihan</span></div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                sortedPenyisihan.forEach((team, index) => {
+                    const statusBadge = team.isFinalist 
+                        ? `<span class="px-2.5 py-1 bg-amber-500/20 text-amber-300 text-xs rounded-full border border-amber-500/30 font-bold">LULUS FINAL</span>`
+                        : `<span class="px-2 py-0.5 bg-slate-800 text-slate-400 text-xs rounded">Tereliminasi</span>`;
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-800/50 transition">
+                            <td class="p-4 text-center font-mono font-bold text-slate-300">#${index + 1}</td>
+                            <td class="p-4 font-semibold text-white">${team.name}</td>
+                            <td class="p-4 text-center text-xs text-slate-400">Sesi ${team.session}</td>
+                            <td class="p-4 text-center font-mono font-medium text-slate-300">${team.wajibScore}</td>
+                            <td class="p-4 text-center font-mono font-medium text-slate-300">${team.lemparanScore}</td>
+                            <td class="p-4 text-center font-mono font-bold text-brand-400 text-base">${team.penyisihanScore}</td>
+                            <td class="p-4 text-center">${statusBadge}</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        // Export Leaderboard to CSV
+        function exportToCSV() {
+            let csv = 'Peringkat,Nama Kelas,Sesi,Poin Wajib,Poin Lemparan,Poin Final,Total Poin,Status\n';
+            const sorted = [...teamsData].sort((a, b) => b.totalScore - a.totalScore);
+            
+            sorted.forEach((t, i) => {
+                const st = t.isFinalist ? 'FINALIS' : 'Penyisihan';
+                csv += `${i+1},"${t.name}",Sesi ${t.session},${t.wajibScore},${t.lemparanScore},${t.finalScore},${t.totalScore},${st}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'Rekap_Final_Cerdas_Cermat_SMAN1_MadangSukuII.csv');
+            a.click();
+        }
+    </script>
+</body>
+</html>
